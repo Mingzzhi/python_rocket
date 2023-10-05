@@ -63,6 +63,13 @@ def mainTrigger(p, h, y):
     return True if y[5] < 0 and y[2] < 500 else False
 
 
+# Define a objective funtion
+
+# It considers only launch stage(the journey after reaching apogee).
+# The meric paraemter inlcuding distance CG and CP, horizontal distance and apogee.
+# the varing parameter is ballast weight(0 to 3000g) and poistion from nose to body cube.
+# The inital weight for apogee, stabilityMargin and hozrion distance will be 50, 30 and 20 ( sum of weight will 100)
+
 # initialization
 weight_apg = 70
 weight_hzor = 10
@@ -72,7 +79,7 @@ target_appogee = 9144
 target_hozri = 0
 target_stability = 1
 
-# Define the drag coefficients and radii of the main and drogue parachutes
+# Define a CG calculator function
 DRAG_COEFF_DROGUE = 1.55
 DRAG_COEFF_MAIN = 2.20
 DROGUE_RADIUS = 0.61
@@ -193,7 +200,7 @@ def Rokcetweigh_len_benchmark(Ballastweigh, position):
     DRAG_COEFF_DROGUE = 1.55
     DRAG_COEFF_MAIN = 2.20
     DROGUE_RADIUS = 0.61
-    MAIN_RADIUS = 1.22;
+    MAIN_RADIUS = 1.22
 
     Deimos = Rocket(
         inertia=Inertia,
