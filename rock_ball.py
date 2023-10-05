@@ -250,20 +250,23 @@ def Rokcetweigh_len_benchmark(Ballastweigh, position):
 
 position = 1.78
 # Number of simualtion
-N = 2
+N = 60
 # initial matrix
 apogee_record = np.zeros(N)
 Horizo_record = np.zeros(N)
 Stabiliy_record = np.zeros(N)
-for i in range(0, N - 1):
-    Ballastweigh = 2 + i * 0.3
+Ballsat_weight = np.zeros(N)
+for i in range(0, N):
+    Ballastweigh = 0 + i * 0.04
+    Ballsat_weight[i] = Ballastweigh
     results = Rokcetweigh_len_benchmark(Ballastweigh, position)
     apogee_record[i] = results.apogee - target_appogee
     Horizo_record[i] = np.sqrt(results.apogee_x ** 2 + results.apogee_y ** 2)
     Stabiliy_record[i] = results.static_margin.get_source().sum()
 
-apogee_record_pr = weight_apg * apogee_record / (np.max(apogee_record) - np.min(apogee_record))
-Horizo_record_pr = weight_hzor * Horizo_record / (np.max(Horizo_record) - np.min(Horizo_record))
-Stabiliy_record_pr = weight_CPACG * Stabiliy_record / (np.max(Stabiliy_record) - np.min(Stabiliy_record))
-Output_pd = pd.DataFrame({"apogee": apogee_record_pr, "horizon": Horizo_record_pr, "Stability": Stabiliy_record_pr})
+apogee_record_pr = apogee_record / (np.max(apogee_record) - np.min(apogee_record))
+Horizo_record_pr = Horizo_record / (np.max(Horizo_record) - np.min(Horizo_record))
+Stabiliy_record_pr = Stabiliy_record / (np.max(Stabiliy_record) - np.min(Stabiliy_record))
+Output_pd = pd.DataFrame({"weight": Ballsat_weight, "apogee": apogee_record_pr, "horizon": Horizo_record_pr,
+                          "Stability": Stabiliy_record_pr})
 Output_pd.to_excel("Ballst_te1_result1.xlsx")
