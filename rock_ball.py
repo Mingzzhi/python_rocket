@@ -224,10 +224,10 @@ def Rokcetweigh_len_benchmark(Ballastweigh, position):
     FinSet = Deimos.add_trapezoidal_fins(
         FIN_NUM, span=SPAN_HEIGHT, root_chord=FIN_ROOT_CHORD, tip_chord=FIN_TIP_CHORD, position=TOP_OF_FIN - CONE_LENGTH
     )
-    Tail = Deimos.add_tail(
+    Deimos.add_tail(
         top_radius=0.0635, bottom_radius=0.0435, length=0.060, position=TOTAL_LENGTH - CONE_LENGTH - 0.44
     )
-    Main = Deimos.add_parachute(
+    Deimos.add_parachute(
         "Main",
         cd_s=DRAG_COEFF_MAIN * (MAIN_RADIUS) ** 2 * np.pi,  # Times reference area
         trigger=mainTrigger,
@@ -235,7 +235,7 @@ def Rokcetweigh_len_benchmark(Ballastweigh, position):
         lag=1.5,
         noise=(0, 8.3, 0.5),
     )
-    Drogue = Deimos.add_parachute(
+    Deimos.add_parachute(
         "Drogue",
         cd_s=DRAG_COEFF_DROGUE * (DROGUE_RADIUS) ** 2 * np.pi,  # Times reference area
         trigger=drogueTrigger,
@@ -248,25 +248,25 @@ def Rokcetweigh_len_benchmark(Ballastweigh, position):
     return TestFlight
 
 
-position = 1.78
+position = 2.26
 # Number of simualtion
-N = 60
+N = 30
 # initial matrix
 apogee_record = np.zeros(N)
 Horizo_record = np.zeros(N)
 Stabiliy_record = np.zeros(N)
 Ballsat_weight = np.zeros(N)
 for i in range(0, N):
-    Ballastweigh = 0 + i * 0.04
+    Ballastweigh = N * 0.04 + i * 0.04
     Ballsat_weight[i] = Ballastweigh
     results = Rokcetweigh_len_benchmark(Ballastweigh, position)
     apogee_record[i] = results.apogee - target_appogee
     Horizo_record[i] = np.sqrt(results.apogee_x ** 2 + results.apogee_y ** 2)
     Stabiliy_record[i] = results.static_margin.get_source().sum()
 
-apogee_record_pr = apogee_record / (np.max(apogee_record) - np.min(apogee_record))
-Horizo_record_pr = Horizo_record / (np.max(Horizo_record) - np.min(Horizo_record))
-Stabiliy_record_pr = Stabiliy_record / (np.max(Stabiliy_record) - np.min(Stabiliy_record))
+apogee_record_pr = apogee_record / np.abs(np.max(apogee_record) - np.min(apogee_record))
+Horizo_record_pr = Horizo_record / np.abs(np.max(Horizo_record) - np.min(Horizo_record))
+Stabiliy_record_pr = Stabiliy_record
 Output_pd = pd.DataFrame({"weight": Ballsat_weight, "apogee": apogee_record_pr, "horizon": Horizo_record_pr,
                           "Stability": Stabiliy_record_pr})
 Output_pd.to_excel("Ballst_te1_result1.xlsx")
